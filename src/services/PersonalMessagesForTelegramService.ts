@@ -31,6 +31,7 @@ export class PersonalMessagesForTelegramService {
       });
       for (let j = 0; j < personalMessage.recipients.length; j++) {
         const recipient = personalMessage.recipients[j];
+        if (personalMessage.sender.id == recipient.id) continue;
         if (!recipient.telegram_chat_id) continue;
         res.push({
           messanger: MessangersConsts.TELEGRAM.toString(),
