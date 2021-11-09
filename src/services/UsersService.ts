@@ -17,7 +17,7 @@ export class UsersService {
     this.couchUsersDbPassword = process.env['COUCHDB_USERS_DB_PASSWORD'] || "";
   }
 
-  async loadUsers(): Promise<any> {
+  async getUsers(): Promise<User[]> {
     if (this.users && typeof this.users.length === 'number') {
       return this.users;
     }
@@ -30,12 +30,30 @@ export class UsersService {
       },
       {auth: this.getAuth()}
     );
-    if (resp.data && resp?.data?.docs) {
-      this.users = resp.data.docs
+    if (resp?.data?.docs?.length > 0) {
+      this.users = resp.data.docs as User[];
     } else {
       this.users = [];
     }
     return this.users;
+  }
+
+  async findUserById(userId: number): Promise<User|null> {
+    const users = await this.getUsers();
+    return users.find(user => user.id == userId) || null;
+  }
+
+  async findUserByNames(firstname: string, lastname: string): Promise<User|null> {
+    const users = await this.getUsers();
+    return users.find(user => (user.firstname == firstname && user.lastname == lastname)) || null;
+  }
+
+  async findUserByFullname(fullname: string): Promise<User|null> {
+    const names = fullname.split(' ');
+    if (!names || typeof names[0] !== 'string' || typeof names[1] !== 'string') return null;
+    const firstname = names[0];
+    const lastname = names[1];
+    return await this.findUserByNames(firstname, lastname);
   }
 
   private getAuth(): {username: string, password: string} {

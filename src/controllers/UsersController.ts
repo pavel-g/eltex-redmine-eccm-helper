@@ -11,7 +11,7 @@ export class VersionController {
   @Get()
   @Returns(200, Array).Of(User)
   async get(): Promise<User[]> {
-    return await this.usersService.loadUsers();
+    return await this.usersService.getUsers();
   }
 
 }
