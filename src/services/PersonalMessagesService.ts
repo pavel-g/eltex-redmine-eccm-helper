@@ -4,6 +4,7 @@ import {NewJournalsService} from "./NewJournalsService";
 import {UsersService} from "./UsersService";
 import {User} from "../models/User";
 import {PersonalParsedMessage} from "../models/PersonalParsedMessage";
+import {EnvsConsts} from "../consts/EnvsConsts";
 
 @Service()
 export class PersonalMessagesService {
@@ -15,8 +16,9 @@ export class PersonalMessagesService {
     private newJournalsService: NewJournalsService,
     private usersService: UsersService
   ) {
-    if (typeof process.env['USER_NAME_REGEXP'] === 'string') {
-      this.userNameRe = new RegExp(process.env['USER_NAME_REGEXP']);
+    const USER_NAME_REGEXP = EnvsConsts.USER_NAME_REGEXP.toString();
+    if (typeof process.env[USER_NAME_REGEXP] === 'string') {
+      this.userNameRe = new RegExp(process.env[USER_NAME_REGEXP] || "");
     }
   }
 

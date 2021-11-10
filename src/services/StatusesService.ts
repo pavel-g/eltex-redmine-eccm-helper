@@ -1,5 +1,6 @@
 import {Service} from "@tsed/di";
 import axios from "axios";
+import {EnvsConsts} from "../consts/EnvsConsts";
 
 @Service()
 export class StatusesService {
@@ -11,9 +12,9 @@ export class StatusesService {
   private couchStatusesDbPassword: string;
 
   constructor() {
-    this.couchStatusesUrlPrefix = process.env['COUCHDB_STATUSES_URL_PREFIX'] || '';
-    this.couchStatusesDbUser = process.env['COUCHDB_STATUSES_DB_USER'] || '';
-    this.couchStatusesDbPassword = process.env['COUCHDB_STATUSES_DB_PASSWORD'] || '';
+    this.couchStatusesUrlPrefix = process.env[EnvsConsts.COUCHDB_STATUSES_URL_PREFIX.toString()] || '';
+    this.couchStatusesDbUser = process.env[EnvsConsts.COUCHDB_STATUSES_DB_USER.toString()] || '';
+    this.couchStatusesDbPassword = process.env[EnvsConsts.COUCHDB_STATUSES_DB_PASSWORD.toString()] || '';
   }
 
   async getStatuses(): Promise<any> {

@@ -5,6 +5,7 @@ import handlebars from "handlebars";
 import {RedmineUrlConverter} from "./fieldconverters/RedmineUrlConverter";
 import {MessangersConsts} from "../consts/MessangersConsts";
 import {MessageTypesConsts} from "../consts/MessageTypesConsts";
+import {EnvsConsts} from "../consts/EnvsConsts";
 
 @Service()
 export class PersonalMessagesForTelegramService {
@@ -14,8 +15,9 @@ export class PersonalMessagesForTelegramService {
   constructor(
     private redmineUrlConverter: RedmineUrlConverter
   ) {
-    if (typeof process.env['TELEGRAM_MESSAGE_TEMPLATE'] === 'string') {
-      this.messageTemplate = process.env['TELEGRAM_MESSAGE_TEMPLATE'];
+    const TELEGRAM_MESSAGE_TEMPLATE = EnvsConsts.TELEGRAM_MESSAGE_TEMPLATE.toString();
+    if (typeof process.env[TELEGRAM_MESSAGE_TEMPLATE] === 'string') {
+      this.messageTemplate = process.env[TELEGRAM_MESSAGE_TEMPLATE] || "";
     }
   }
 

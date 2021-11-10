@@ -1,6 +1,7 @@
 import {Service} from "@tsed/di";
 import axios from "axios";
 import {User} from "../models/User";
+import {EnvsConsts} from "../consts/EnvsConsts";
 
 @Service()
 export class UsersService {
@@ -12,9 +13,9 @@ export class UsersService {
   private couchUsersDbPassword: string;
 
   constructor() {
-    this.couchUsersUrlPrefix = process.env['COUCHDB_USERS_URL_PREFIX'] || "";
-    this.couchUsersDbUser = process.env['COUCHDB_USERS_DB_USER'] || "";
-    this.couchUsersDbPassword = process.env['COUCHDB_USERS_DB_PASSWORD'] || "";
+    this.couchUsersUrlPrefix = process.env[EnvsConsts.COUCHDB_USERS_URL_PREFIX.toString()] || "";
+    this.couchUsersDbUser = process.env[EnvsConsts.COUCHDB_USERS_DB_USER.toString()] || "";
+    this.couchUsersDbPassword = process.env[EnvsConsts.COUCHDB_USERS_DB_PASSWORD.toString()] || "";
   }
 
   async getUsers(): Promise<User[]> {
