@@ -1,6 +1,5 @@
 import {Service} from "@tsed/di";
 import {UsersService} from "./UsersService";
-import {StatusesService} from "./StatusesService";
 import {StatusRulesService} from "./StatusRulesService";
 import {FieldConverters} from "./fieldconverters/FieldConverters";
 
@@ -11,7 +10,6 @@ export class IssueEnhanceService {
 
   constructor(
     private usersService: UsersService,
-    private statusesService: StatusesService,
     private statusRulesService: StatusRulesService,
     private fieldConverters: FieldConverters
   ) {

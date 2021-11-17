@@ -27,7 +27,7 @@ export class UsersService {
       url,
       {
         "selector": {},
-        "limit": 1000
+        "limit": 9999
       },
       {auth: this.getAuth()}
     );
@@ -36,7 +36,16 @@ export class UsersService {
     } else {
       this.users = [];
     }
+    this.enhanceUsers();
     return this.users;
+  }
+
+  private enhanceUsers(): void {
+    if (!this.users || this.users.length <= 0) return;
+    for (let i = 0; i < this.users.length; i++) {
+      if (typeof this.users[i].name === 'string') continue;
+      this.users[i].name = `${this.users[i].firstname} ${this.users[i].lastname}`;
+    }
   }
 
   async findUserById(userId: number): Promise<User|null> {

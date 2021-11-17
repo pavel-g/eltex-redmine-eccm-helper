@@ -11,5 +11,8 @@ export class User {
   lastname?: string;
 
   @Property()
+  name?: string;
+
+  @Property()
   telegram_chat_id?: string;
 }

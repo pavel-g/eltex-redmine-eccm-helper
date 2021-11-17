@@ -5,6 +5,8 @@ import {BodyParams} from "@tsed/common";
 import {PersonalMessagesRequest} from "../models/PersonalMessagesRequest";
 import {PersonalMessagesService} from "../services/PersonalMessagesService";
 import {PersonalMessagesForTelegramService} from "../services/PersonalMessagesForTelegramService";
+import {ChangesAnalizeService} from "../services/ChangesAnalizeService";
+import {ChangesMessagesForTelegramService} from "../services/ChangesMessagesForTelegramService";
 
 @Controller("/issue")
 export class IssueController {
@@ -12,7 +14,9 @@ export class IssueController {
   constructor(
     private issueEnhanceService: IssueEnhanceService,
     private personalMessagesService: PersonalMessagesService,
-    private personalMessagesForTelegramService: PersonalMessagesForTelegramService
+    private personalMessagesForTelegramService: PersonalMessagesForTelegramService,
+    private changesAnalizeService: ChangesAnalizeService,
+    private changesMessagesForTelegramService: ChangesMessagesForTelegramService,
   ) {
   }
 
@@ -37,6 +41,26 @@ export class IssueController {
     );
     const messagesForSending = await this.personalMessagesForTelegramService.getTelegramMessages(params.issue, messages);
     return messagesForSending;
+  }
+
+  @Post('/changes')
+  @Returns(200)
+  async getChanges(@BodyParams() params: PersonalMessagesRequest): Promise<any> {
+    return await this.changesAnalizeService.getChanges(params.issue, params.after_date || params.after_timestamp);
+  }
+
+  @Post('/changes/for-telegram')
+  @Returns(200)
+  async getChangesForTelegram(@BodyParams() params: PersonalMessagesRequest): Promise<any> {
+    const changes = await this.changesAnalizeService.getChanges(
+      params.issue,
+      params.after_date || params.after_timestamp
+    );
+    const res = await this.changesMessagesForTelegramService.getTelegramMessages(
+      params.issue,
+      changes
+    );
+    return res;
   }
 
 }

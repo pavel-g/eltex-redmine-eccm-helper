@@ -23,7 +23,8 @@ export class UserConverter implements FieldConverterInterface {
     return {
       id: userFullData.id,
       firstname: userFullData.firstname,
-      lastname: userFullData.lastname
+      lastname: userFullData.lastname,
+      name: `${userFullData.firstname} ${userFullData.lastname}`
     } as User;
   }
 }

@@ -37,6 +37,19 @@ export class StatusesService {
         this.statuses = [];
       }
     }
+    return this.statuses;
+  }
+
+  async findStatusById(statusId: number): Promise<any|null> {
+    const statuses = await this.getStatuses();
+    const status = statuses.find((status: any) => {
+      return status.id == statusId;
+    });
+    if (!status) return null;
+    return {
+      id: status.id,
+      name: status.name
+    };
   }
 
 }

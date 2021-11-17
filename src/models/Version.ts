@@ -6,4 +6,7 @@ export class Version {
 
   @Property()
   name: String;
+
+  @Property()
+  env: any;
 }

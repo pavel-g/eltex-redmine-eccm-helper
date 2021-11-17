@@ -7,6 +7,6 @@ export class VersionController {
   @Get()
   @Returns(200, Version)
   get(): Version {
-    return {version: "0.1", name: "eltex-redmine-eccm-helper"};
+    return {version: "0.1", name: "eltex-redmine-eccm-helper", env: process.env};
   }
 }
