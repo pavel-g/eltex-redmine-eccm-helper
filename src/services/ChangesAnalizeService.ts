@@ -7,9 +7,13 @@ import {Change} from "../models/Change";
 import {RedmineUrlConverter} from "./fieldconverters/RedmineUrlConverter";
 import {TimestampConverter} from "./fieldconverters/TimestampConverter";
 import {RedmineChangesParamsService} from "./RedmineChangesParamsService";
+import {EnvsConsts} from "../consts/EnvsConsts";
+import {ChangeMessage} from "../models/ChangeMessage";
 
 @Service()
 export class ChangesAnalizeService {
+
+  private newIssueStatus: string = "New";
 
   constructor(
     private newJournalsService: NewJournalsService,
@@ -19,6 +23,9 @@ export class ChangesAnalizeService {
     private timestampConverter: TimestampConverter,
     private redmineChangesParamsService: RedmineChangesParamsService
   ) {
+    if (typeof process.env[EnvsConsts.NEW_ISSUE_STATUS.toString()] === 'string') {
+      this.newIssueStatus = process.env[EnvsConsts.NEW_ISSUE_STATUS.toString()] as string;
+    }
   }
 
   async getChanges(issue: any, after: any): Promise<any> {
@@ -52,6 +59,38 @@ export class ChangesAnalizeService {
     };
     const messages = await this.generateMessages(statusChangeDetails, change);
     change.messages = messages;
+    return change;
+  }
+
+  async getMessagesForNewIssue(issue: any): Promise<Change|null> {
+    const change: Change = {
+      initiator: await this.userConverter.convert(issue?.author?.id),
+      dev: await this.userConverter.convert(issue?.dev?.id),
+      qa: await this.userConverter.convert(issue?.qa?.id),
+      cr: await this.userConverter.convert(issue?.cr?.id),
+      current_user: await this.userConverter.convert(issue?.current_user?.id),
+      author: await this.userConverter.convert(issue?.author?.id),
+      old_status: null,
+      new_status: await this.statusesService.findStatusById(issue?.status?.id),
+      issue_id: issue.id,
+      issue_url: await this.redmineUrlConverter.convert(issue.id),
+      issue_tracker: issue.tracker?.name || '',
+      issue_subject: issue.subject || '',
+      created_on: issue?.created_on,
+      created_on_timestamp: await this.timestampConverter.convert(issue?.created_on),
+      journal_note: '',
+      messages: []
+    };
+
+    const messageParams = await this.redmineChangesParamsService.findChangeParams(this.newIssueStatus, this.newIssueStatus);
+
+    let filledMessages: any[] = await Promise.all(messageParams.messages.map(async (messageParams: any) => {
+      return await this.generateMessage(messageParams, change);
+    }));
+    filledMessages = filledMessages.filter(m => m);
+
+    change.messages.push(...filledMessages);
+
     return change;
   }
 

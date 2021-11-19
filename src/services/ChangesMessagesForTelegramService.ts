@@ -10,7 +10,7 @@ export class ChangesMessagesForTelegramService {
   constructor(private usersService: UsersService) {
   }
 
-  async getTelegramMessages(issue: any, changesMessages: any[]): Promise<PersonalMessage[]> {
+  async getTelegramMessages(changesMessages: any[]): Promise<PersonalMessage[]> {
     const res: PersonalMessage[] = [];
     for (let i = 0; i < changesMessages.length; i++) {
       const changeMessage = changesMessages[i];
@@ -19,10 +19,17 @@ export class ChangesMessagesForTelegramService {
         const message = changeMessage.messages[j];
         if (!message || !message.notification_message || !message.recipient?.id) continue;
         const user = await this.usersService.findUserById(message.recipient.id);
-        if (!user || !user.telegram_chat_id) continue;
+        const messageType = MessageTypesConsts.CHANGE_NOTIFICATION_FROM_ISSUE.toString();
+        if (
+          !user ||
+          !user.telegram_chat_id ||
+          !user.message_types ||
+          user.message_types.indexOf(messageType) < 0 ||
+          changeMessage.initiator?.id == message.recipient?.id
+        ) continue;
         res.push({
           messanger: MessangersConsts.TELEGRAM.toString(),
-          message_type: MessageTypesConsts.CHANGE_NOTIFICATION_FROM_ISSUE.toString(),
+          message_type: messageType,
           message: message.notification_message,
           recipient_id: user.telegram_chat_id
         });

@@ -1,4 +1,5 @@
 import {User} from "./User";
+import {ChangeMessage} from "./ChangeMessage";
 
 export class Change {
   initiator?: User;
@@ -15,16 +16,12 @@ export class Change {
   old_status?: {
     id?: number;
     name?: string;
-  };
+  } | null;
   new_status?: {
     id?: number;
     name?: string;
   };
   created_on: string;
   created_on_timestamp: number|null;
-  messages: {
-    changes_message?: string;
-    notification_message?: string;
-    recipient?: User;
-  }[]
+  messages: ChangeMessage[]
 }

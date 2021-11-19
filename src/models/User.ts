@@ -15,4 +15,7 @@ export class User {
 
   @Property()
   telegram_chat_id?: string;
+
+  @Property()
+  message_types?: string[]|null;
 }

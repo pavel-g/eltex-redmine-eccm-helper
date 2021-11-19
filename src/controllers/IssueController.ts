@@ -7,6 +7,7 @@ import {PersonalMessagesService} from "../services/PersonalMessagesService";
 import {PersonalMessagesForTelegramService} from "../services/PersonalMessagesForTelegramService";
 import {ChangesAnalizeService} from "../services/ChangesAnalizeService";
 import {ChangesMessagesForTelegramService} from "../services/ChangesMessagesForTelegramService";
+import {ChangesMessagesForCouchDbService} from "../services/ChangesMessagesForCouchDbService";
 
 @Controller("/issue")
 export class IssueController {
@@ -17,6 +18,7 @@ export class IssueController {
     private personalMessagesForTelegramService: PersonalMessagesForTelegramService,
     private changesAnalizeService: ChangesAnalizeService,
     private changesMessagesForTelegramService: ChangesMessagesForTelegramService,
+    private changesMessagesForCouchDbService: ChangesMessagesForCouchDbService,
   ) {
   }
 
@@ -57,8 +59,48 @@ export class IssueController {
       params.after_date || params.after_timestamp
     );
     const res = await this.changesMessagesForTelegramService.getTelegramMessages(
-      params.issue,
       changes
+    );
+    return res;
+  }
+
+  @Post('/changes/for-couchdb')
+  @Returns(200)
+  async getChangesForCouchDb(@BodyParams() params: PersonalMessagesRequest): Promise<any[]> {
+    const changes = await this.changesAnalizeService.getChanges(
+      params.issue,
+      params.after_date || params.after_timestamp
+    );
+    const res = await this.changesMessagesForCouchDbService.getCouchDbMessages(
+      changes
+    );
+    return res;
+  }
+
+  @Post('/changes-for-new-issue')
+  @Returns(200)
+  async getChangesForNewIssue(@BodyParams() params: {issue: any}): Promise<any> {
+    return await this.changesAnalizeService.getMessagesForNewIssue(params.issue);
+  }
+
+  @Post('/changes-for-new-issue/for-telegram')
+  @Returns(200)
+  async getChangesForNewIssueForTelegram(@BodyParams() params: {issue: any}): Promise<any> {
+    const changes = await this.changesAnalizeService.getMessagesForNewIssue(params.issue);
+    if (!changes) return [];
+    const res = await this.changesMessagesForTelegramService.getTelegramMessages(
+      [changes]
+    );
+    return res;
+  }
+
+  @Post('/changes-for-new-issue/for-couchdb')
+  @Returns(200)
+  async getChangesForNewIssueForCouchDb(@BodyParams() params: {issue: any}): Promise<any> {
+    const changes = await this.changesAnalizeService.getMessagesForNewIssue(params.issue);
+    if (!changes) return [];
+    const res = await this.changesMessagesForCouchDbService.getCouchDbMessages(
+      [changes]
     );
     return res;
   }
