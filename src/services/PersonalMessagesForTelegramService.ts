@@ -40,17 +40,20 @@ export class PersonalMessagesForTelegramService {
         if (personalMessage.sender.id == recipient.id) continue;
         const messageType = MessageTypesConsts.PERSONAL_NOTIFICATION_FROM_ISSUE.toString()
         if (
-          !recipientUser ||
-          !recipientUser.telegram_chat_id ||
-          (recipientUser?.message_types?.indexOf(messageType) || -1) < 0 ||
-          sender?.id == recipientUser?.id
-        ) continue;
-        res.push({
-          messanger: MessangersConsts.TELEGRAM.toString(),
-          message_type: messageType,
-          message: resMessage,
-          recipient_id: recipientUser?.telegram_chat_id
-        });
+          recipientUser &&
+          recipientUser.telegram_chat_id &&
+          recipientUser.message_types &&
+          typeof recipientUser.message_types.includes == 'function' &&
+          recipientUser.message_types.includes(messageType) &&
+          sender?.id != recipientUser?.id
+        ) {
+          res.push({
+            messanger: MessangersConsts.TELEGRAM.toString(),
+            message_type: messageType,
+            message: resMessage,
+            recipient_id: recipientUser.telegram_chat_id
+          });
+        }
       }
     }
     return res;

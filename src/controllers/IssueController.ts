@@ -28,6 +28,10 @@ export class IssueController {
     return await this.issueEnhanceService.enhanceIssue(issue);
   }
 
+  @Post('/changes-2')
+  @Returns(200)
+  async getChanges2(): Promise<any> {}
+
   @Post('/personal-messages')
   @Returns(200)
   async getPersonalMessages(@BodyParams() params: PersonalMessagesRequest): Promise<any> {

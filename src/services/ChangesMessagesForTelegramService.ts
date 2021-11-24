@@ -21,18 +21,18 @@ export class ChangesMessagesForTelegramService {
         const user = await this.usersService.findUserById(message.recipient.id);
         const messageType = MessageTypesConsts.CHANGE_NOTIFICATION_FROM_ISSUE.toString();
         if (
-          !user ||
-          !user.telegram_chat_id ||
-          !user.message_types ||
-          user.message_types.indexOf(messageType) < 0 ||
-          changeMessage.initiator?.id == message.recipient?.id
-        ) continue;
-        res.push({
-          messanger: MessangersConsts.TELEGRAM.toString(),
-          message_type: messageType,
-          message: message.notification_message,
-          recipient_id: user.telegram_chat_id
-        });
+          user?.telegram_chat_id &&
+          typeof user?.message_types?.includes == 'function' &&
+          user.message_types.includes(messageType) &&
+          changeMessage.initiator?.id != message.recipient?.id
+        ) {
+          res.push({
+            messanger: MessangersConsts.TELEGRAM.toString(),
+            message_type: messageType,
+            message: message.notification_message,
+            recipient_id: user.telegram_chat_id
+          });
+        }
       }
     }
     return res;
