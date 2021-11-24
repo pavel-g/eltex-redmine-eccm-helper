@@ -8,7 +8,6 @@ import {RedmineUrlConverter} from "./fieldconverters/RedmineUrlConverter";
 import {TimestampConverter} from "./fieldconverters/TimestampConverter";
 import {RedmineChangesParamsService} from "./RedmineChangesParamsService";
 import {EnvsConsts} from "../consts/EnvsConsts";
-import {ChangeMessage} from "../models/ChangeMessage";
 
 @Service()
 export class ChangesAnalizeService {
@@ -38,7 +37,7 @@ export class ChangesAnalizeService {
 
   private async getMessagesForChangeStatus(issue: any, journal: any): Promise<Change|null> {
     const statusChangeDetails = this.getStatusChangeDetails(journal);
-    if (!statusChangeDetails) null;
+    if (!statusChangeDetails) return null;
     const change: Change = {
       initiator: await this.userConverter.convert(journal?.user?.id),
       dev: await this.userConverter.convert(issue?.dev?.id),
