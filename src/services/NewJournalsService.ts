@@ -21,7 +21,7 @@ export class NewJournalsService {
     for (let i = 0; i < issue.journals.length; i++) {
       const journal = issue.journals[i];
       const journalTimestamp = await this.timestampConverter.convert(journal?.created_on || null) || -1;
-      if (journalTimestamp < afterTimestamp) continue;
+      if (journalTimestamp <= afterTimestamp) continue;
       newJournals.push(journal);
     }
     return newJournals;
