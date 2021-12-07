@@ -3,6 +3,7 @@ import {PersonalMessage} from "../models/PersonalMessage";
 import {MessangersConsts} from "../consts/MessangersConsts";
 import {MessageTypesConsts} from "../consts/MessageTypesConsts";
 import {UsersService} from "./UsersService";
+import {uniqWith} from "lodash";
 
 @Service()
 export class ChangesMessagesForTelegramService {
@@ -35,7 +36,16 @@ export class ChangesMessagesForTelegramService {
         }
       }
     }
-    return res;
+    return uniqWith(res, this.isEqualMessages);
+  }
+
+  private isEqualMessages(msg1: PersonalMessage, msg2: PersonalMessage): boolean {
+    return (
+      msg1.message == msg2.message &&
+      msg1.message_type == msg2.message_type &&
+      msg1.recipient_id == msg2.recipient_id &&
+      msg1.messanger == msg2.messanger
+    );
   }
 
 }
