@@ -45,9 +45,10 @@ export class Server {
       .use(cookieParser())
       .use(compress({}))
       .use(methodOverride())
-      .use(bodyParser.json())
+      .use(bodyParser.json({limit: '100mb'}))
       .use(bodyParser.urlencoded({
-        extended: true
+        extended: true,
+        limit: '100mb'
       }));
   }
 }
